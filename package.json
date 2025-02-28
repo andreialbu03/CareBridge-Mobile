@@ -9,6 +9,9 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.758.0",
+    "@aws-sdk/client-textract": "^3.758.0",
+    "buffer": "^6.0.3",
     "expo": "~52.0.37",
     "expo-image-picker": "^16.0.6",
     "expo-status-bar": "~2.0.1",
