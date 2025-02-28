@@ -1,20 +1,26 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { useState } from "react";
+import React, { useEffect } from "react";
+import { View, Alert } from "react-native";
+import * as ImagePicker from "expo-image-picker";
+
+import UploadScreen from "./Screens/UploadScreen";
+import ResultScreen from "./Screens/ResultScreen";
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+  // Request permissions when the app starts
+  useEffect(() => {
+    const requestPermissions = async () => {
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        alert("Sorry, we need camera roll permissions to make this work!");
+      }
+    };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+    requestPermissions();
+  }, []);
+
+  let screen = <UploadScreen />;
+
+  return <View>{screen}</View>;
+}
