@@ -9,15 +9,25 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@aws-amplify/cli": "^12.14.4",
+    "@aws-amplify/react-native": "^1.1.7",
     "@aws-sdk/client-s3": "^3.758.0",
     "@aws-sdk/client-textract": "^3.758.0",
+    "@react-native-async-storage/async-storage": "^2.1.2",
+    "aws-amplify": "^6.13.4",
     "buffer": "^6.0.3",
     "expo": "~52.0.37",
     "expo-image-picker": "^16.0.6",
     "expo-status-bar": "~2.0.1",
     "react": "18.3.1",
     "react-native": "0.76.7",
-    "react-native-get-random-values": "^1.11.0"
+    "react-native-get-random-values": "^1.11.0",
+    "react-native-polyfill-globals": "^3.1.0",
+    "stream-browserify": "^3.0.0",
+    "web-streams-polyfill": "4.1.0"
+  },
+  "resolutions": {
+    "web-streams-polyfill": "4.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

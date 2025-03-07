@@ -1,0 +1,14 @@
+{
+  "resourceName": "s340985391",
+  "policyUUID": "40985391",
+  "bucketName": "carebridge549572fe65384bca9323cebdf51ca214",
+  "storageAccess": "auth",
+  "guestAccess": [],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "triggerFunction": "S3Trigger279d2729",
+  "groupAccess": {}
+}

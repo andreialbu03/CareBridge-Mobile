@@ -1,10 +1,14 @@
-// App.js
 import React, { useState, useEffect } from "react";
 import { SafeAreaView, StatusBar, View, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import UploadScreen from "./Screens/UploadScreen.js";
 import ResultScreen from "./Screens/ResultScreen.js";
-import "react-native-get-random-values";
+import { processImage } from "./services/AwsService.js";
+import { Amplify } from "aws-amplify";
+import amplifyconfig from "./src/amplifyconfiguration.json";
+
+// Configure Amplify
+Amplify.configure(amplifyconfig);
 
 export default function App() {
   const [screen, setScreen] = useState("upload");
@@ -12,7 +16,6 @@ export default function App() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [results, setResults] = useState(null);
 
-  // Request permissions when the app starts
   useEffect(() => {
     const requestPermissions = async () => {
       const { status } =
@@ -24,26 +27,27 @@ export default function App() {
     requestPermissions();
   }, []);
 
-  // Handle document upload and processing
   const handleUpload = async () => {
     if (!selectedImage) return;
 
     setIsProcessing(true);
 
-    // Simulate processing - in a real app you would send this to your backend
-    setTimeout(() => {
+    try {
+      const textractResults = await processImage(selectedImage);
       setResults({
         title: "Medical Report Analysis",
-        content: "This is a sample analysis of the uploaded medical document.",
+        content: textractResults,
         recommendations:
           "Please consult with your healthcare provider to discuss these results.",
       });
-      setIsProcessing(false);
       setScreen("result");
-    }, 2000);
+    } catch (error) {
+      console.error("Error processing image:", error);
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
-  // Reset and go back to upload screen
   const handleReset = () => {
     setSelectedImage(null);
     setResults(null);

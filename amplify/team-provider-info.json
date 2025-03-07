@@ -1,0 +1,29 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-carebridge-dev-ac082-authRole",
+      "UnauthRoleArn": "arn:aws:iam::253490752920:role/amplify-carebridge-dev-ac082-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::253490752920:role/amplify-carebridge-dev-ac082-authRole",
+      "Region": "ca-central-1",
+      "DeploymentBucketName": "amplify-carebridge-dev-ac082-deployment",
+      "UnauthRoleName": "amplify-carebridge-dev-ac082-unauthRole",
+      "StackName": "amplify-carebridge-dev-ac082",
+      "StackId": "arn:aws:cloudformation:ca-central-1:253490752920:stack/amplify-carebridge-dev-ac082/2d1fdab0-fb81-11ef-b3f9-06e5863888e5",
+      "AmplifyAppId": "d3bnu6c7njl57q"
+    },
+    "categories": {
+      "auth": {
+        "carebridge71364901": {}
+      },
+      "function": {
+        "S3Trigger279d2729": {
+          "deploymentBucketName": "amplify-carebridge-dev-ac082-deployment",
+          "s3Key": "amplify-builds/S3Trigger279d2729-4e6e6363385058346937-build.zip"
+        }
+      },
+      "storage": {
+        "s340985391": {}
+      }
+    }
+  }
+}
