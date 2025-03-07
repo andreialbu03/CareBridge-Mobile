@@ -4,6 +4,7 @@ import { SafeAreaView, StatusBar, View, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import UploadScreen from "./Screens/UploadScreen.js";
 import ResultScreen from "./Screens/ResultScreen.js";
+import "react-native-get-random-values";
 
 export default function App() {
   const [screen, setScreen] = useState("upload");

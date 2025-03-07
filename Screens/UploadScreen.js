@@ -12,7 +12,7 @@ import {
   Alert,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-// import { processImage } from "../services/AwsService";
+import { processImage } from "../services/AwsService";
 
 // Get screen dimensions
 const { width, height } = Dimensions.get("window");

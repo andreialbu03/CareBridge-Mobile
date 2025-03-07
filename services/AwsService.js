@@ -7,15 +7,21 @@ import {
   DetectDocumentTextCommand,
   AnalyzeDocumentCommand,
 } from "@aws-sdk/client-textract";
+import {
+  AWS_REGION,
+  AWS_ACCESS_KEY_ID,
+  AWS_SECRET_ACCESS_KEY,
+  S3_BUCKET_NAME,
+} from "@env";
 
 // AWS Configuration - Replace these with your actual values
 const awsConfig = {
-  region: "YOUR_AWS_REGION", // e.g., 'us-east-1'
+  region: AWS_REGION,
   credentials: {
-    accessKeyId: "YOUR_ACCESS_KEY_ID",
-    secretAccessKey: "YOUR_SECRET_ACCESS_KEY",
+    accessKeyId: AWS_ACCESS_KEY_ID,
+    secretAccessKey: AWS_SECRET_ACCESS_KEY,
   },
-  bucketName: "YOUR_S3_BUCKET_NAME",
+  bucketName: S3_BUCKET_NAME,
 };
 
 /**
@@ -25,16 +31,20 @@ const awsConfig = {
  */
 export const processImage = async (imageUri) => {
   try {
+    console.log("Processing image:", imageUri);
     // Step 1: Read the image file
     const imageBase64 = await fileToBase64(imageUri);
 
     // Step 2: Upload to S3
     const s3Key = await uploadToS3(imageBase64, imageUri);
 
-    // Step 3: Process with Textract
-    const textractResults = await analyzeWithTextract(s3Key);
+    console.log(s3Key);
 
-    return textractResults;
+    return "works";
+    // // Step 3: Process with Textract
+    // const textractResults = await analyzeWithTextract(s3Key);
+
+    // return textractResults;
   } catch (error) {
     console.error("Error processing image:", error);
     throw error;
