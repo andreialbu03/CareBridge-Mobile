@@ -6,7 +6,12 @@ import {
   AnalyzeDocumentCommand,
 } from "@aws-sdk/client-textract";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import { AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } from "@env";
+import {
+  AWS_REGION,
+  AWS_ACCESS_KEY_ID,
+  AWS_SECRET_ACCESS_KEY,
+  S3_BUCKET_NAME,
+} from "@env";
 
 // Create a direct S3 client
 const s3Client = new S3Client({
@@ -21,10 +26,10 @@ export const processImage = async (imageUri) => {
   try {
     // Just pass the URI directly to uploadToS3
     const s3Key = await uploadToS3Direct(imageUri);
-    // const textractResults = await analyzeWithTextract(s3Key);
-    // return textractResults;
-    console.log("s3key", s3Key);
-    return "s3key";
+    const textractResults = await analyzeWithTextract(s3Key);
+    return textractResults;
+    // console.log("s3key", s3Key);
+    // return "s3key";
   } catch (error) {
     console.error("Error processing image:", error);
     throw error;
@@ -70,7 +75,7 @@ const uploadToS3Direct = async (uri) => {
 
     // Upload directly using AWS SDK
     const command = new PutObjectCommand({
-      Bucket: "carebridge549572fe65384bca9323cebdf51ca214ac082-dev",
+      Bucket: S3_BUCKET_NAME,
       Key: key,
       Body: buffer,
       ContentType: "image/jpeg",
@@ -150,7 +155,7 @@ const analyzeWithTextract = async (s3Key) => {
     const params = {
       Document: {
         S3Object: {
-          Bucket: "carebridge549572fe65384bca9323cebdf51ca214ac082-dev", // Using the bucket name from your config
+          Bucket: S3_BUCKET_NAME, // Using the bucket name from your config
           Name: s3Key,
         },
       },

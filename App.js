@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { SafeAreaView, StatusBar, View, StyleSheet } from "react-native";
+import { SafeAreaView, StatusBar, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import UploadScreen from "./Screens/UploadScreen.js";
 import ResultScreen from "./Screens/ResultScreen.js";
@@ -29,20 +29,14 @@ export default function App() {
 
   const handleUpload = async () => {
     if (!selectedImage) return;
-
     setIsProcessing(true);
-
     try {
       const textractResults = await processImage(selectedImage);
-      setResults({
-        title: "Medical Report Analysis",
-        content: textractResults,
-        recommendations:
-          "Please consult with your healthcare provider to discuss these results.",
-      });
+      setResults(textractResults); // Store the raw Textract results
       setScreen("result");
     } catch (error) {
       console.error("Error processing image:", error);
+      alert("Error processing image. Please try again.");
     } finally {
       setIsProcessing(false);
     }

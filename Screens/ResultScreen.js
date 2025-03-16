@@ -1,24 +1,40 @@
 // Screens/ResultsScreen.js
 import React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 
-const ResultsScreen = ({ route }) => {
-  const { textractResults } = route.params || {};
+const ResultScreen = ({ results, handleReset }) => {
+  // Modify the component to use the results prop directly rather than route.params
+  const textractResults = results;
 
-  // Function to extract text from Textract response
   const extractText = (results) => {
     if (!results || !results.Blocks) {
       return "No text detected in the document.";
     }
 
-    // Filter for LINE type blocks and sort by position (top to bottom)
+    // Filter for LINE type blocks and sort by position (top to bottom, then left to right)
     const lines = results.Blocks.filter(
       (block) => block.BlockType === "LINE"
     ).sort((a, b) => {
-      if (a.Geometry?.BoundingBox?.Top && b.Geometry?.BoundingBox?.Top) {
-        return a.Geometry.BoundingBox.Top - b.Geometry.BoundingBox.Top;
+      const aTop = a.Geometry?.BoundingBox?.Top || 0;
+      const bTop = b.Geometry?.BoundingBox?.Top || 0;
+
+      // If they're roughly on the same line (within 2% of page height)
+      if (Math.abs(aTop - bTop) < 0.02) {
+        // Sort by Left position (left to right)
+        return (
+          (a.Geometry?.BoundingBox?.Left || 0) -
+          (b.Geometry?.BoundingBox?.Left || 0)
+        );
       }
-      return 0;
+
+      // Otherwise sort by Top position (top to bottom)
+      return aTop - bTop;
     });
 
     // Extract and join the text
@@ -26,6 +42,10 @@ const ResultsScreen = ({ route }) => {
   };
 
   return (
+    // <ScrollView>
+    //   <View></View>
+    //   <Text>Document Analysis Results</Text>
+    // </ScrollView>
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Document Analysis Results</Text>
@@ -77,6 +97,10 @@ const ResultsScreen = ({ route }) => {
           decisions.
         </Text>
       </View>
+      {/* Add a button at the bottom */}
+      <TouchableOpacity style={styles.backButton} onPress={handleReset}>
+        <Text style={styles.backButtonText}>Process Another Document</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
@@ -151,4 +175,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ResultsScreen;
+export default ResultScreen;

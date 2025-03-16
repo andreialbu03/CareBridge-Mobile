@@ -1,5 +1,5 @@
 // Screens/UploadScreen.js
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   StyleSheet,
@@ -9,18 +9,18 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Dimensions,
-  Alert,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { processImage } from "../services/AwsService";
 
 // Get screen dimensions
 const { width, height } = Dimensions.get("window");
 
-const UploadScreen = ({ navigation }) => {
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [isProcessing, setIsProcessing] = useState(false);
-
+const UploadScreen = ({
+  selectedImage,
+  setSelectedImage,
+  handleUpload,
+  isProcessing,
+}) => {
   const pickImage = async () => {
     // Launch the image picker
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -32,28 +32,6 @@ const UploadScreen = ({ navigation }) => {
 
     if (!result.canceled && result.assets.length > 0) {
       setSelectedImage(result.assets[0].uri);
-    }
-  };
-
-  const handleUpload = async () => {
-    if (!selectedImage) return;
-
-    try {
-      setIsProcessing(true);
-
-      // Call our AWS service to process the image
-      const textractResults = await processImage(selectedImage);
-
-      // Navigate to results screen with the textract data
-      navigation.navigate("Results", { textractResults });
-    } catch (error) {
-      console.error("Error processing document:", error);
-      Alert.alert(
-        "Upload Failed",
-        "There was an error processing your document. Please try again."
-      );
-    } finally {
-      setIsProcessing(false);
     }
   };
 
@@ -130,7 +108,7 @@ const UploadScreen = ({ navigation }) => {
             styles.uploadButton,
             (!selectedImage || isProcessing) && styles.disabledButton,
           ]}
-          onPress={handleUpload}
+          onPress={handleUpload} // This uses the handleUpload from App.js
           disabled={!selectedImage || isProcessing}
         >
           {isProcessing ? (
@@ -268,7 +246,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
   },
-
   // Image preview styles
   previewContainer: {
     marginBottom: 16,
