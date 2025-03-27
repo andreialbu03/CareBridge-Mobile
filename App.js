@@ -31,8 +31,8 @@ export default function App() {
     if (!selectedImage) return;
     setIsProcessing(true);
     try {
-      const textractResults = await processImage(selectedImage);
-      setResults(textractResults); // Store the raw Textract results
+      const explanation = await processImage(selectedImage);
+      setResults(explanation); // Store the raw Textract results
       setScreen("result");
     } catch (error) {
       console.error("Error processing image:", error);

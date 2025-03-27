@@ -11,7 +11,9 @@ import {
   AWS_ACCESS_KEY_ID,
   AWS_SECRET_ACCESS_KEY,
   S3_BUCKET_NAME,
+  OPENAI_API_KEY,
 } from "@env";
+import OpenAI from "openai";
 
 // Create a direct S3 client
 const s3Client = new S3Client({
@@ -22,14 +24,19 @@ const s3Client = new S3Client({
   },
 });
 
+const openai = new OpenAI({
+  apiKey: OPENAI_API_KEY,
+  dangerouslyAllowBrowser: true, // Only for React Native
+});
+
 export const processImage = async (imageUri) => {
   try {
     // Just pass the URI directly to uploadToS3
     const s3Key = await uploadToS3Direct(imageUri);
     const textractResults = await analyzeWithTextract(s3Key);
-    return textractResults;
-    // console.log("s3key", s3Key);
-    // return "s3key";
+    const extractedText = extractText(textractResults);
+    const explanation = analyzeTextWithOpenAI(extractedText);
+    return explanation;
   } catch (error) {
     console.error("Error processing image:", error);
     throw error;
@@ -143,6 +150,7 @@ const uploadToS3Direct = async (uri) => {
 
 const analyzeWithTextract = async (s3Key) => {
   try {
+    console.log("Analyzing document with Textract...");
     const textractClient = new TextractClient({
       region: AWS_REGION,
       credentials: {
@@ -169,6 +177,68 @@ const analyzeWithTextract = async (s3Key) => {
     return response;
   } catch (error) {
     console.error("Error analyzing with Textract:", error);
+    throw error;
+  }
+};
+
+const extractText = (results) => {
+  if (!results || !results.Blocks) {
+    return "No text detected in the document.";
+  }
+
+  // Filter for LINE type blocks and sort by position (top to bottom, then left to right)
+  const lines = results.Blocks.filter(
+    (block) => block.BlockType === "LINE"
+  ).sort((a, b) => {
+    const aTop = a.Geometry?.BoundingBox?.Top || 0;
+    const bTop = b.Geometry?.BoundingBox?.Top || 0;
+
+    // If they're roughly on the same line (within 2% of page height)
+    if (Math.abs(aTop - bTop) < 0.02) {
+      // Sort by Left position (left to right)
+      return (
+        (a.Geometry?.BoundingBox?.Left || 0) -
+        (b.Geometry?.BoundingBox?.Left || 0)
+      );
+    }
+
+    // Otherwise sort by Top position (top to bottom)
+    return aTop - bTop;
+  });
+
+  // Extract and join the text
+  return lines.map((line) => line.Text).join("\n");
+};
+
+const analyzeTextWithOpenAI = async (extractedText) => {
+  try {
+    console.log("Analyzing text with OpenAI...");
+    console.log("Extracted text in ai:", extractedText);
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are a helpful assistant that analyzes medical documents.",
+        },
+        {
+          role: "user",
+          content: `Analyze this medical document text and provide a clear explanation:
+
+${extractedText}
+
+Provide a comprehensive analysis highlighting key medical information.`,
+        },
+      ],
+      // max_tokens: 300,
+    });
+
+    // console.log("OpenAI response:", response.choices[0].message);
+
+    return response.choices[0].message.content;
+  } catch (error) {
+    console.error("Error analyzing text with OpenAI:", error);
     throw error;
   }
 };

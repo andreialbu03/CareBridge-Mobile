@@ -54,7 +54,8 @@ const ResultScreen = ({ results, handleReset }) => {
       <View style={styles.resultContainer}>
         <Text style={styles.sectionTitle}>Extracted Text:</Text>
         <View style={styles.textContent}>
-          <Text style={styles.contentText}>{extractText(textractResults)}</Text>
+          {/* <Text style={styles.contentText}>{extractText(textractResults)}</Text> */}
+          <Text style={styles.contentText}>{textractResults}</Text>
         </View>
       </View>
 
