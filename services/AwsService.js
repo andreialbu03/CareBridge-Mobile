@@ -14,6 +14,10 @@ import {
   OPENAI_API_KEY,
 } from "@env";
 import OpenAI from "openai";
+import "react-native-get-random-values";
+import "react-native-url-polyfill/auto";
+import { ReadableStream } from "web-streams-polyfill";
+globalThis.ReadableStream = ReadableStream;
 
 // Create a direct S3 client
 const s3Client = new S3Client({
@@ -61,7 +65,7 @@ const fileToBase64 = async (uri) => {
 
 const uploadToS3Direct = async (uri) => {
   try {
-    console.log("Uploading file to S3 directly...");
+    console.log("Getting ready to upload to S3...");
     const fileName = uri.split("/").pop();
     const timestamp = new Date().getTime();
     const key = `uploads/${timestamp}-${fileName}`;
@@ -69,6 +73,7 @@ const uploadToS3Direct = async (uri) => {
     // Read the file
     let fileContent;
     try {
+      console.log("Reading file:", uri);
       fileContent = await FileSystem.readAsStringAsync(uri, {
         encoding: FileSystem.EncodingType.Base64,
       });
@@ -80,6 +85,7 @@ const uploadToS3Direct = async (uri) => {
     // Create buffer from base64
     const buffer = Buffer.from(fileContent, "base64");
 
+    console.log("Uploading file to S3 directly...");
     // Upload directly using AWS SDK
     const command = new PutObjectCommand({
       Bucket: S3_BUCKET_NAME,
@@ -88,6 +94,7 @@ const uploadToS3Direct = async (uri) => {
       ContentType: "image/jpeg",
     });
 
+    console.log("here");
     await s3Client.send(command);
     console.log("File uploaded successfully to S3:", key);
     return key;

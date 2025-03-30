@@ -25,8 +25,9 @@
     "react-native-get-random-values": "^1.11.0",
     "react-native-markdown-display": "^7.0.2",
     "react-native-polyfill-globals": "^3.1.0",
+    "react-native-url-polyfill": "^2.0.0",
     "stream-browserify": "^3.0.0",
-    "web-streams-polyfill": "4.1.0"
+    "web-streams-polyfill": "^4.1.0"
   },
   "resolutions": {
     "web-streams-polyfill": "4.1.0"
