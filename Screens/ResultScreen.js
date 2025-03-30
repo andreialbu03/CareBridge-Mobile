@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
+import Markdown from "react-native-markdown-display";
 
 const ResultScreen = ({ results, handleReset }) => {
   // Modify the component to use the results prop directly rather than route.params
@@ -42,10 +43,6 @@ const ResultScreen = ({ results, handleReset }) => {
   };
 
   return (
-    // <ScrollView>
-    //   <View></View>
-    //   <Text>Document Analysis Results</Text>
-    // </ScrollView>
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Document Analysis Results</Text>
@@ -55,7 +52,8 @@ const ResultScreen = ({ results, handleReset }) => {
         <Text style={styles.sectionTitle}>Extracted Text:</Text>
         <View style={styles.textContent}>
           {/* <Text style={styles.contentText}>{extractText(textractResults)}</Text> */}
-          <Text style={styles.contentText}>{textractResults}</Text>
+          {/* <Text style={styles.contentText}>{textractResults}</Text> */}
+          <Markdown style={styles.markdownStyles}>{textractResults}</Markdown>
         </View>
       </View>
 
@@ -98,10 +96,13 @@ const ResultScreen = ({ results, handleReset }) => {
           decisions.
         </Text>
       </View>
+
       {/* Add a button at the bottom */}
-      <TouchableOpacity style={styles.backButton} onPress={handleReset}>
-        <Text style={styles.backButtonText}>Process Another Document</Text>
-      </TouchableOpacity>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.backButton} onPress={handleReset}>
+          <Text style={styles.backButtonText}>Process Another Document</Text>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 };
@@ -150,6 +151,37 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     color: "#333",
   },
+  markdownStyles: {
+    body: {
+      fontSize: 14,
+      lineHeight: 22,
+      color: "#333",
+    },
+    heading1: {
+      fontSize: 20,
+      fontWeight: "bold",
+      marginVertical: 10,
+    },
+    heading2: {
+      fontSize: 18,
+      fontWeight: "bold",
+      marginVertical: 8,
+    },
+    heading3: {
+      fontSize: 16,
+      fontWeight: "bold",
+      marginVertical: 6,
+    },
+    list_item: {
+      marginVertical: 4,
+    },
+    paragraph: {
+      marginVertical: 8,
+    },
+    strong: {
+      fontWeight: "bold",
+    },
+  },
   formContent: {
     padding: 12,
   },
@@ -173,6 +205,30 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#666",
     fontStyle: "italic",
+  },
+  buttonContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginVertical: 20,
+    paddingBottom: 20,
+  },
+  backButton: {
+    backgroundColor: "#4062FF",
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 3,
+    width: 250,
+  },
+  backButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "600",
+    textAlign: "center",
   },
 });
 
