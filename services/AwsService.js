@@ -36,7 +36,7 @@ const openai = new OpenAI({
 // Process an image using AWS Textract and OpenAI gpt model
 export const processImage = async (imageUri) => {
   try {
-    const s3Key = await uploadToS3Direct(imageUri);
+    const s3Key = await uploadToS3(imageUri);
     const textractResults = await analyzeWithTextract(s3Key);
     const extractedText = extractText(textractResults);
     const explanation = analyzeTextWithOpenAI(extractedText);
@@ -47,23 +47,8 @@ export const processImage = async (imageUri) => {
   }
 };
 
-const fileToBase64 = async (uri) => {
-  try {
-    const fileInfo = await FileSystem.getInfoAsync(uri);
-    if (!fileInfo.exists) {
-      throw new Error("File doesn't exist");
-    }
-    const base64 = await FileSystem.readAsStringAsync(uri, {
-      encoding: FileSystem.EncodingType.Base64,
-    });
-    return base64;
-  } catch (error) {
-    console.error("Error converting file to base64:", error);
-    throw error;
-  }
-};
-
-const uploadToS3Direct = async (uri) => {
+// Upload an image to S3
+const uploadToS3 = async (uri) => {
   try {
     console.log("Getting ready to upload to S3...");
     const fileName = uri.split("/").pop();
@@ -85,8 +70,8 @@ const uploadToS3Direct = async (uri) => {
     // Create buffer from base64
     const buffer = Buffer.from(fileContent, "base64");
 
+    // Upload to S3
     console.log("Uploading file to S3 directly...");
-    // Upload directly using AWS SDK
     const command = new PutObjectCommand({
       Bucket: S3_BUCKET_NAME,
       Key: key,
@@ -94,7 +79,6 @@ const uploadToS3Direct = async (uri) => {
       ContentType: "image/jpeg",
     });
 
-    console.log("here");
     await s3Client.send(command);
     console.log("File uploaded successfully to S3:", key);
     return key;
@@ -104,60 +88,12 @@ const uploadToS3Direct = async (uri) => {
   }
 };
 
-// const uploadToS3 = async (base64Data, uri) => {
-//   try {
-//     console.log("Uploading file to S3...");
-//     const fileName = uri.split("/").pop();
-//     const timestamp = new Date().getTime();
-//     const key = `uploads/${timestamp}-${fileName}`;
-
-//     // Use the file URI directly for local files
-//     if (uri.startsWith("file://") || uri.startsWith("content://")) {
-//       // For local files, we can use the file URI directly
-//       const result = await uploadData({
-//         key: key,
-//         data: uri,
-//         options: {
-//           contentType: "image/jpeg", // or 'image/png' based on your file type
-//           useAccelerateEndpoint: true, // Optional: can speed up uploads
-//         },
-//       }).result;
-
-//       console.log("File uploaded successfully to S3:", key);
-//       return key;
-//     } else {
-//       // For base64 data, we need a different approach
-//       // Create a temporary file from the base64 data
-//       const tempFilePath = FileSystem.cacheDirectory + fileName;
-//       await FileSystem.writeAsStringAsync(tempFilePath, base64Data, {
-//         encoding: FileSystem.EncodingType.Base64,
-//       });
-
-//       // Upload the temporary file
-//       const result = await uploadData({
-//         key: key,
-//         data: tempFilePath,
-//         options: {
-//           contentType: "image/jpeg",
-//           useAccelerateEndpoint: true,
-//         },
-//       }).result;
-
-//       // Clean up the temporary file
-//       await FileSystem.deleteAsync(tempFilePath, { idempotent: true });
-
-//       console.log("File uploaded successfully to S3:", key);
-//       return key;
-//     }
-//   } catch (error) {
-//     console.error("Error uploading to S3:", error);
-//     throw error;
-//   }
-// };
-
+// Analyze an image using AWS Textract
 const analyzeWithTextract = async (s3Key) => {
   try {
     console.log("Analyzing document with Textract...");
+
+    // Create Textract client
     const textractClient = new TextractClient({
       region: AWS_REGION,
       credentials: {
@@ -166,17 +102,18 @@ const analyzeWithTextract = async (s3Key) => {
       },
     });
 
-    // Use the bucket name from your amplify config
+    // Prepare the request
     const params = {
       Document: {
         S3Object: {
-          Bucket: S3_BUCKET_NAME, // Using the bucket name from your config
+          Bucket: S3_BUCKET_NAME,
           Name: s3Key,
         },
       },
       FeatureTypes: ["TABLES", "FORMS"],
     };
 
+    // Analyze the document
     const command = new AnalyzeDocumentCommand(params);
     const response = await textractClient.send(command);
 
@@ -188,6 +125,7 @@ const analyzeWithTextract = async (s3Key) => {
   }
 };
 
+// Extract text from Textract results
 const extractText = (results) => {
   if (!results || !results.Blocks) {
     return "No text detected in the document.";
@@ -217,10 +155,11 @@ const extractText = (results) => {
   return lines.map((line) => line.Text).join("\n");
 };
 
+// Analyze text with OpenAI
 const analyzeTextWithOpenAI = async (extractedText) => {
   try {
+    // Make the OpenAI API call
     console.log("Analyzing text with OpenAI...");
-    console.log("Extracted text in ai:", extractedText);
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
