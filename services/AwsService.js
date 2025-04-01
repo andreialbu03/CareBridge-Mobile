@@ -1,4 +1,3 @@
-import { uploadData } from "aws-amplify/storage";
 import { Buffer } from "buffer";
 import * as FileSystem from "expo-file-system";
 import {
@@ -19,23 +18,24 @@ import "react-native-url-polyfill/auto";
 import { ReadableStream } from "web-streams-polyfill";
 globalThis.ReadableStream = ReadableStream;
 
-// Create a direct S3 client
+// Create S3 client
 const s3Client = new S3Client({
-  region: "ca-central-1", // Your region from the config
+  region: AWS_REGION,
   credentials: {
     accessKeyId: AWS_ACCESS_KEY_ID,
     secretAccessKey: AWS_SECRET_ACCESS_KEY,
   },
 });
 
+// Create OpenAI client
 const openai = new OpenAI({
   apiKey: OPENAI_API_KEY,
   dangerouslyAllowBrowser: true, // Only for React Native
 });
 
+// Process an image using AWS Textract and OpenAI gpt model
 export const processImage = async (imageUri) => {
   try {
-    // Just pass the URI directly to uploadToS3
     const s3Key = await uploadToS3Direct(imageUri);
     const textractResults = await analyzeWithTextract(s3Key);
     const extractedText = extractText(textractResults);
