@@ -59,6 +59,7 @@ const ResultScreen = ({ results, handleReset }) => {
         </View>
       )}
 
+      {/* Disclaimer */}
       <View style={styles.disclaimerContainer}>
         <Text style={styles.disclaimerText}>
           Disclaimer: This tool provides automated medical interpretations for
@@ -78,6 +79,7 @@ const ResultScreen = ({ results, handleReset }) => {
   );
 };
 
+// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -116,11 +118,6 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 1,
     borderColor: "#eee",
-  },
-  contentText: {
-    fontSize: 14,
-    lineHeight: 22,
-    color: "#333",
   },
   markdownStyles: {
     body: {
