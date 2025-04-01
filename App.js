@@ -10,12 +10,15 @@ import amplifyconfig from "./src/amplifyconfiguration.json";
 // Configure Amplify
 Amplify.configure(amplifyconfig);
 
+// Main App component
 export default function App() {
+  // State to manage various screens and data
   const [screen, setScreen] = useState("upload");
   const [selectedImage, setSelectedImage] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [results, setResults] = useState(null);
 
+  // Request permissions on app load for photo library
   useEffect(() => {
     const requestPermissions = async () => {
       const { status } =
@@ -27,12 +30,15 @@ export default function App() {
     requestPermissions();
   }, []);
 
+  // Function to handle image upload and processing
   const handleUpload = async () => {
     if (!selectedImage) return;
     setIsProcessing(true);
+
+    // Try to process the image and get the results
     try {
       const explanation = await processImage(selectedImage);
-      setResults(explanation); // Store the raw Textract results
+      setResults(explanation);
       setScreen("result");
     } catch (error) {
       console.error("Error processing image:", error);
@@ -42,6 +48,7 @@ export default function App() {
     }
   };
 
+  // Function to reset the app state
   const handleReset = () => {
     setSelectedImage(null);
     setResults(null);
@@ -65,6 +72,7 @@ export default function App() {
   );
 }
 
+// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
