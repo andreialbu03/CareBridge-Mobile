@@ -1,4 +1,3 @@
-// Screens/UploadScreen.js
 import React from "react";
 import {
   View,
@@ -15,6 +14,7 @@ import * as ImagePicker from "expo-image-picker";
 // Get screen dimensions
 const { width, height } = Dimensions.get("window");
 
+// UploadScreen component
 const UploadScreen = ({
   selectedImage,
   setSelectedImage,
@@ -30,6 +30,7 @@ const UploadScreen = ({
       quality: 1,
     });
 
+    // If the user selected an image, set it as the selected image
     if (!result.canceled && result.assets.length > 0) {
       setSelectedImage(result.assets[0].uri);
     }
@@ -37,14 +38,18 @@ const UploadScreen = ({
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
+      {/* Header */}
       <View style={styles.header}>
         <View style={styles.logoContainer}>
-          {/* Use a placeholder view if you don't have the logo */}
-          <View style={styles.logoPlaceholder} />
+          <Image
+            source={require("../assets/logo.png")}
+            style={styles.logoPlaceholder}
+          />
         </View>
         <Text style={styles.welcomeTitle}>Welcome to CareBridge</Text>
       </View>
 
+      {/* Description */}
       <View style={styles.descriptionContainer}>
         <Text style={styles.description}>
           CareBridge is a web-based healthcare communication tool designed to
@@ -53,7 +58,7 @@ const UploadScreen = ({
         </Text>
       </View>
 
-      {/* Make the instructions more compact */}
+      {/* App instructions */}
       <View style={styles.instructionsContainer}>
         <Text style={styles.instructionsTitle}>How to Use:</Text>
         <View style={styles.instructionStep}>
@@ -74,11 +79,23 @@ const UploadScreen = ({
             Click "Upload" to initiate the process.
           </Text>
         </View>
+        <View style={styles.instructionStep}>
+          <Text style={styles.instructionNumber}>3.</Text>
+          <Text style={styles.instructionText}>
+            Wait for the tool to process the document.
+          </Text>
+        </View>
+        <View style={styles.instructionStep}>
+          <Text style={styles.instructionNumber}>3.</Text>
+          <Text style={styles.instructionText}>
+            Once processing is complete, you'll get a medical explanation.
+          </Text>
+        </View>
       </View>
 
       {/* Upload Container with Image Preview */}
       <View style={styles.uploadContainer}>
-        {/* Image Preview - Show if an image is selected */}
+        {/* Image Preview visible if an image is selected */}
         {selectedImage && (
           <View style={styles.previewContainer}>
             <Image
@@ -95,7 +112,7 @@ const UploadScreen = ({
           </View>
         )}
 
-        {/* Only show the Choose File button if no image is selected */}
+        {/* Only show Choose File button if no image is selected */}
         {!selectedImage && (
           <TouchableOpacity style={styles.chooseFileButton} onPress={pickImage}>
             <Text style={styles.chooseFileText}>Choose File</Text>
@@ -108,7 +125,8 @@ const UploadScreen = ({
             styles.uploadButton,
             (!selectedImage || isProcessing) && styles.disabledButton,
           ]}
-          onPress={handleUpload} // This uses the handleUpload from App.js
+          // This uses the handleUpload from App.js
+          onPress={handleUpload}
           disabled={!selectedImage || isProcessing}
         >
           {isProcessing ? (
@@ -119,6 +137,7 @@ const UploadScreen = ({
         </TouchableOpacity>
       </View>
 
+      {/* Disclaimer */}
       <Text style={styles.disclaimerText}>
         Please note that while this tool can provide helpful insights, it's
         essential to consult with a healthcare professional for any medical
@@ -130,6 +149,7 @@ const UploadScreen = ({
 
 export default UploadScreen;
 
+// Styles
 const styles = StyleSheet.create({
   scrollContainer: {
     padding: 16,
@@ -143,10 +163,10 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   logoPlaceholder: {
-    width: 70,
-    height: 70,
+    width: 96,
+    height: 60,
     backgroundColor: "#f0f0f0",
-    borderRadius: 35,
+    borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
   },
