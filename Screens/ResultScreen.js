@@ -1,4 +1,3 @@
-// Screens/ResultsScreen.js
 import React from "react";
 import {
   View,
@@ -49,7 +48,9 @@ const ResultScreen = ({ results, handleReset }) => {
       </View>
 
       <View style={styles.resultContainer}>
-        <Text style={styles.sectionTitle}>Extracted Text:</Text>
+        <Text style={styles.sectionTitle}>
+          Interpreted Medical Information:
+        </Text>
         <View style={styles.textContent}>
           {/* <Text style={styles.contentText}>{extractText(textractResults)}</Text> */}
           {/* <Text style={styles.contentText}>{textractResults}</Text> */}
@@ -91,9 +92,10 @@ const ResultScreen = ({ results, handleReset }) => {
 
       <View style={styles.disclaimerContainer}>
         <Text style={styles.disclaimerText}>
-          This analysis is provided for informational purposes only. Please
-          consult with a healthcare professional for any medical advice or
-          decisions.
+          Disclaimer: This tool provides automated medical interpretations for
+          informational purposes only. It is not a substitute for professional
+          advice, diagnosis, or treatment. Always consult a qualified healthcare
+          provider for accurate guidance.
         </Text>
       </View>
 
