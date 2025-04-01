@@ -1,4 +1,4 @@
-# CareBridge Mobile - The New Healthcare App at your Fingertips
+# _CareBridge Mobile_ - The New Healthcare App at your Fingertips
 
 Welcome to **_CareBridge Mobile_**, a mobile healthcare communication app designed to help you understand and interpret medical documents and notes from healthcare providers. This app builds on the previous web based application and delivers the same functionality with mobile first approach and focus.
 
@@ -13,21 +13,25 @@ You can access **_CareBridge_** by clicking [this link](http://15.156.201.68:800
 
 ## Overview
 
-CareBridge empowers you to better understand your health by interpreting medical jargon with a range of features:
-
-- **Document Upload**: Easily upload your doctor's notes or medical documents securely.
-- **Document Interpretation**: Receive explanations in plain English to help you understand the medical information contained in the documents.
-- **Text Extraction**: The tool extracts the text from your uploaded documents for analysis.
+CareBridge is now redesigned with a mobile-first approach to improve accessibility and usability for a wider audience. This update ensures optimal performance on mobile devices, addressing the technological landscape where mobile usage is dominant.
 
 ## Features
 
-### Document Upload
+With CareBridge, you can easily interpret medical jargon and understand your health with a range of features:
 
-Upload and store your medical documents securely to keep track of your health records.
+- **Mobile Optimization**: Responsive design, touch-friendly navigation, and intuitive interfaces for seamless use on smartphones.
 
-### Document Interpretation
+- **Document Upload**: Securely upload your doctor's notes or medical documents for interpretation.
 
-Receive medical explanations in plain language to understand your health situation better.
+- **Document Interpretation**: Get clear, plain-language explanations of medical information.
+
+- **Text Extraction**: Extract and analyze text from uploaded medical documents.
+
+- **Text-to-Speech**: Listen to translated medical explanations, making the app more accessible for users with visual impairments or low literacy.
+
+- **Mobile-Native Integrations**: Use your phone’s camera to upload doctor’s notes easily.
+
+- **Sharing & Saving**: Save medical information to your device or share it via email and messaging apps.
 
 ## Dependencies
 
