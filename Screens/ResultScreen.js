@@ -8,38 +8,9 @@ import {
 } from "react-native";
 import Markdown from "react-native-markdown-display";
 
+// ResultScreen component
 const ResultScreen = ({ results, handleReset }) => {
-  // Modify the component to use the results prop directly rather than route.params
   const textractResults = results;
-
-  const extractText = (results) => {
-    if (!results || !results.Blocks) {
-      return "No text detected in the document.";
-    }
-
-    // Filter for LINE type blocks and sort by position (top to bottom, then left to right)
-    const lines = results.Blocks.filter(
-      (block) => block.BlockType === "LINE"
-    ).sort((a, b) => {
-      const aTop = a.Geometry?.BoundingBox?.Top || 0;
-      const bTop = b.Geometry?.BoundingBox?.Top || 0;
-
-      // If they're roughly on the same line (within 2% of page height)
-      if (Math.abs(aTop - bTop) < 0.02) {
-        // Sort by Left position (left to right)
-        return (
-          (a.Geometry?.BoundingBox?.Left || 0) -
-          (b.Geometry?.BoundingBox?.Left || 0)
-        );
-      }
-
-      // Otherwise sort by Top position (top to bottom)
-      return aTop - bTop;
-    });
-
-    // Extract and join the text
-    return lines.map((line) => line.Text).join("\n");
-  };
 
   return (
     <ScrollView style={styles.container}>
@@ -52,8 +23,6 @@ const ResultScreen = ({ results, handleReset }) => {
           Interpreted Medical Information:
         </Text>
         <View style={styles.textContent}>
-          {/* <Text style={styles.contentText}>{extractText(textractResults)}</Text> */}
-          {/* <Text style={styles.contentText}>{textractResults}</Text> */}
           <Markdown style={styles.markdownStyles}>{textractResults}</Markdown>
         </View>
       </View>

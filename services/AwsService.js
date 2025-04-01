@@ -180,7 +180,7 @@ Provide a comprehensive analysis highlighting key medical information.`,
       // max_tokens: 300,
     });
 
-    // console.log("OpenAI response:", response.choices[0].message);
+    console.log("OpenAI analysis completed successfully");
 
     return response.choices[0].message.content;
   } catch (error) {
