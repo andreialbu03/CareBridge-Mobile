@@ -1,16 +1,55 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import Markdown from "react-native-markdown-display";
+import * as Speech from "expo-speech";
 
 // ResultScreen component
 const ResultScreen = ({ results, handleReset }) => {
   const textractResults = results;
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
+  // Function to handle text-to-speech
+  const speakText = async () => {
+    // If already speaking, stop it
+    if (isSpeaking) {
+      await Speech.stop();
+      setIsSpeaking(false);
+      return;
+    }
+
+    // Convert markdown to plain text (basic approach)
+    const plainText =
+      typeof textractResults === "string"
+        ? textractResults.replace(/\*\*(.*?)\*\*/g, "$1").replace(/\#\s/g, "")
+        : "No text to read";
+
+    setIsSpeaking(true);
+
+    try {
+      await Speech.speak(plainText, {
+        language: "en-US",
+        pitch: 1.0,
+        rate: 0.8,
+        onDone: () => setIsSpeaking(false),
+        onError: (error) => {
+          setIsSpeaking(false);
+          Alert.alert("Speech Error", "Failed to read text");
+          console.error(error);
+        },
+      });
+    } catch (error) {
+      setIsSpeaking(false);
+      Alert.alert("Speech Error", "Failed to read text");
+      console.error(error);
+    }
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -19,9 +58,16 @@ const ResultScreen = ({ results, handleReset }) => {
       </View>
 
       <View style={styles.resultContainer}>
-        <Text style={styles.sectionTitle}>
-          Interpreted Medical Information:
-        </Text>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>
+            Interpreted Medical Information:
+          </Text>
+          <TouchableOpacity style={styles.speakButton} onPress={speakText}>
+            <Text style={styles.speakButtonText}>
+              {isSpeaking ? "Stop" : "Speak"}
+            </Text>
+          </TouchableOpacity>
+        </View>
         <View style={styles.textContent}>
           <Markdown style={styles.markdownStyles}>{textractResults}</Markdown>
         </View>
@@ -106,11 +152,29 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 2,
   },
+  sectionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 12,
+  },
   sectionTitle: {
     fontSize: 18,
     fontWeight: "600",
-    marginBottom: 12,
     color: "#333",
+    flex: 1,
+  },
+  speakButton: {
+    backgroundColor: "#4062FF",
+    borderRadius: 6,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    marginLeft: 10,
+  },
+  speakButtonText: {
+    color: "white",
+    fontSize: 14,
+    fontWeight: "600",
   },
   textContent: {
     backgroundColor: "#f9f9f9",
