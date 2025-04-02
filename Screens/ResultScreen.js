@@ -9,6 +9,8 @@ import {
 } from "react-native";
 import Markdown from "react-native-markdown-display";
 import * as Speech from "expo-speech";
+import * as Sharing from "expo-sharing";
+import * as Print from "expo-print";
 
 // ResultScreen component
 const ResultScreen = ({ results, handleReset }) => {
@@ -51,6 +53,73 @@ const ResultScreen = ({ results, handleReset }) => {
     }
   };
 
+  // Inside your component, add this function:
+  const saveFormattedContent = async () => {
+    try {
+      if (!textractResults) {
+        Alert.alert("Cannot Save", "No content available to save");
+        return;
+      }
+
+      // Convert markdown to HTML
+      const markdownContent =
+        typeof textractResults === "string"
+          ? textractResults
+          : JSON.stringify(textractResults, null, 2);
+
+      // Create HTML with proper styling
+      const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <title>Medical Analysis Report</title>
+          <style>
+            body {
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+              line-height: 1.5;
+              padding: 20px;
+              color: #333;
+            }
+            h1, h2, h3, h4 {
+              color: #444;
+            }
+            h3 {
+              border-bottom: 1px solid #eee;
+              padding-bottom: 8px;
+            }
+            strong {
+              font-weight: 600;
+            }
+          </style>
+        </head>
+        <body>
+          ${markdownContent
+            .replace(/###/g, "<h3>")
+            .replace(/\n- \*\*/g, "<br><strong>")
+            .replace(/:\*\*/g, ":</strong>")
+            .replace(/\n\n/g, "<br><br>")}
+        </body>
+      </html>
+    `;
+
+      // Generate a PDF file
+      const { uri } = await Print.printToFileAsync({ html: htmlContent });
+
+      // Share the PDF file
+      await Sharing.shareAsync(uri, {
+        mimeType: "application/pdf",
+        dialogTitle: "Save Medical Report",
+        UTI: "com.adobe.pdf", // iOS only
+      });
+    } catch (error) {
+      Alert.alert(
+        "Error",
+        "Failed to save formatted content: " + error.message
+      );
+    }
+  };
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
@@ -62,11 +131,20 @@ const ResultScreen = ({ results, handleReset }) => {
           <Text style={styles.sectionTitle}>
             Interpreted Medical Information:
           </Text>
-          <TouchableOpacity style={styles.speakButton} onPress={speakText}>
-            <Text style={styles.speakButtonText}>
-              {isSpeaking ? "Stop" : "Speak"}
-            </Text>
-          </TouchableOpacity>
+          <View style={styles.actionButtons}>
+            <TouchableOpacity style={styles.actionButton} onPress={speakText}>
+              <Text style={styles.actionButtonText}>
+                {isSpeaking ? "Stop" : "Speak"}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.actionButton, styles.shareButton]}
+              //   onPress={handleShare}
+              onPress={saveFormattedContent}
+            >
+              <Text style={styles.actionButtonText}>Save PDF</Text>
+            </TouchableOpacity>
+          </View>
         </View>
         <View style={styles.textContent}>
           <Markdown style={styles.markdownStyles}>{textractResults}</Markdown>
@@ -108,7 +186,7 @@ const ResultScreen = ({ results, handleReset }) => {
       {/* Disclaimer */}
       <View style={styles.disclaimerContainer}>
         <Text style={styles.disclaimerText}>
-          Disclaimer: This tool provides automated medical interpretations for
+          Disclaimer: This app provides automated medical interpretations for
           informational purposes only. It is not a substitute for professional
           advice, diagnosis, or treatment. Always consult a qualified healthcare
           provider for accurate guidance.
@@ -164,14 +242,20 @@ const styles = StyleSheet.create({
     color: "#333",
     flex: 1,
   },
-  speakButton: {
+  actionButtons: {
+    flexDirection: "row",
+  },
+  actionButton: {
     backgroundColor: "#4062FF",
     borderRadius: 6,
     paddingVertical: 6,
     paddingHorizontal: 12,
-    marginLeft: 10,
+    marginLeft: 8,
   },
-  speakButtonText: {
+  shareButton: {
+    backgroundColor: "#28a745",
+  },
+  actionButtonText: {
     color: "white",
     fontSize: 14,
     fontWeight: "600",

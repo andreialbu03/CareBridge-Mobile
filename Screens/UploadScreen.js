@@ -21,6 +21,7 @@ const UploadScreen = ({
   handleUpload,
   isProcessing,
 }) => {
+  // Function to pick image from gallery
   const pickImage = async () => {
     // Launch the image picker
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -31,6 +32,31 @@ const UploadScreen = ({
     });
 
     // If the user selected an image, set it as the selected image
+    if (!result.canceled && result.assets.length > 0) {
+      setSelectedImage(result.assets[0].uri);
+    }
+  };
+
+  // New function to take a picture with the camera
+  const takePicture = async () => {
+    // Request camera permissions first
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+
+    if (status !== "granted") {
+      alert("Sorry, we need camera permissions to make this work!");
+      return;
+    }
+
+    console.log("Launching camera...");
+
+    // Launch the camera
+    let result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    // If the user took a picture, set it as the selected image
     if (!result.canceled && result.assets.length > 0) {
       setSelectedImage(result.assets[0].uri);
     }
@@ -52,8 +78,8 @@ const UploadScreen = ({
       {/* Description */}
       <View style={styles.descriptionContainer}>
         <Text style={styles.description}>
-          CareBridge is a web-based healthcare communication tool designed to
-          help you understand and interpret medical documents and notes from
+          CareBridge is a mobile healthcare communication app designed to help
+          you understand and interpret medical documents and notes from
           healthcare providers.
         </Text>
       </View>
@@ -64,7 +90,7 @@ const UploadScreen = ({
         <View style={styles.instructionStep}>
           <Text style={styles.instructionNumber}>1.</Text>
           <Text style={styles.instructionText}>
-            Click the "Choose File" button below.
+            Choose a file from your device or take a new photo.
           </Text>
         </View>
         <View style={styles.instructionStep}>
@@ -80,13 +106,13 @@ const UploadScreen = ({
           </Text>
         </View>
         <View style={styles.instructionStep}>
-          <Text style={styles.instructionNumber}>3.</Text>
+          <Text style={styles.instructionNumber}>4.</Text>
           <Text style={styles.instructionText}>
-            Wait for the tool to process the document.
+            Wait for the app to process the document.
           </Text>
         </View>
         <View style={styles.instructionStep}>
-          <Text style={styles.instructionNumber}>3.</Text>
+          <Text style={styles.instructionNumber}>5.</Text>
           <Text style={styles.instructionText}>
             Once processing is complete, you'll get a medical explanation.
           </Text>
@@ -103,21 +129,33 @@ const UploadScreen = ({
               style={styles.imagePreview}
               resizeMode="contain"
             />
-            <TouchableOpacity
-              style={styles.changeImageButton}
-              onPress={pickImage}
-            >
-              <Text style={styles.changeImageText}>Change Image</Text>
-            </TouchableOpacity>
+            <View style={styles.imageActionButtons}>
+              <TouchableOpacity
+                style={styles.changeImageButton}
+                onPress={pickImage}
+              >
+                <Text style={styles.changeImageText}>Choose From Gallery</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.changeImageButton}
+                onPress={takePicture}
+              >
+                <Text style={styles.changeImageText}>Take New Photo</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         )}
 
-        {/* Only show Choose File button if no image is selected */}
+        {/* Show both buttons if no image is selected */}
         {!selectedImage && (
-          <TouchableOpacity style={styles.chooseFileButton} onPress={pickImage}>
-            <Text style={styles.chooseFileText}>Choose File</Text>
-            <Text style={styles.fileSelectedText}>no file selected</Text>
-          </TouchableOpacity>
+          <View style={styles.inputButtonsContainer}>
+            <TouchableOpacity style={styles.inputButton} onPress={pickImage}>
+              <Text style={styles.inputButtonText}>Choose From Gallery</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.inputButton} onPress={takePicture}>
+              <Text style={styles.inputButtonText}>Take a Photo</Text>
+            </TouchableOpacity>
+          </View>
         )}
 
         <TouchableOpacity
@@ -139,7 +177,7 @@ const UploadScreen = ({
 
       {/* Disclaimer */}
       <Text style={styles.disclaimerText}>
-        Please note that while this tool can provide helpful insights, it's
+        Please note that while this app can provide helpful insights, it's
         essential to consult with a healthcare professional for any medical
         advice or decisions.
       </Text>
@@ -233,23 +271,23 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#e0e0e0",
   },
-  chooseFileButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+  // New styles for input option buttons
+  inputButtonsContainer: {
+    marginBottom: 16,
+  },
+  inputButton: {
     borderWidth: 1,
     borderColor: "#ddd",
     borderRadius: 4,
-    padding: 10,
-    marginBottom: 12,
+    padding: 12,
+    marginBottom: 10,
+    backgroundColor: "#f9f9f9",
+    alignItems: "center",
   },
-  chooseFileText: {
-    color: "#555",
+  inputButtonText: {
+    color: "#4062FF",
     fontSize: 16,
-  },
-  fileSelectedText: {
-    color: "#999",
-    fontSize: 14,
+    fontWeight: "500",
   },
   uploadButton: {
     backgroundColor: "#4062FF",
@@ -281,13 +319,21 @@ const styles = StyleSheet.create({
     height: 200,
     borderRadius: 4,
   },
-  changeImageButton: {
+  imageActionButtons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
     marginTop: 10,
+  },
+  changeImageButton: {
     padding: 8,
     backgroundColor: "#f0f0f0",
     borderRadius: 4,
     borderWidth: 1,
     borderColor: "#ddd",
+    flex: 1,
+    marginHorizontal: 4,
+    alignItems: "center",
   },
   changeImageText: {
     color: "#4062FF",
