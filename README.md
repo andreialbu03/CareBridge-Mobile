@@ -2,14 +2,14 @@
 
 Welcome to **_CareBridge Mobile_**, a mobile healthcare communication app designed to help you understand and interpret medical documents and notes from healthcare providers. This app builds on the previous web based application and delivers the same functionality with mobile first approach and focus.
 
-You can access **_CareBridge_** by clicking [this link](http://15.156.201.68:8000)
+You can view the live demo of **_CareBridge Mobile_** by clicking [this link](https://youtube.com/shorts/vL0RapFc1PM?feature=share)
 
 ## Table of Contents
 
 - [Overview](#overview)
 - [Features](#features)
-- [Running Locally](#running-the-application-locally)
 - [Dependencies](#dependencies)
+- [Running Locally](#running-the-application-locally)
 
 ## Overview
 
@@ -35,52 +35,52 @@ With CareBridge, you can easily interpret medical jargon and understand your hea
 
 ## Dependencies
 
-CareBridge uses the following packages:
+CareBridge Mobile uses these main packages:
 
-- `fastapi`: A modern, fast (high-performance) web framework for building APIs with Python.
-- `uvicorn`: An ASGI server implementation, for running the application.
-- `jinja2`: A template engine for Python.
-- `python-multipart`: A streaming multipart parser for Python.
-- `boto3`: The Amazon Web Services (AWS) SDK for Python.
-- `python-dotenv`: Reads key-value pairs from a `.env` file and sets them as environment variables.
-- `openai`: The official OpenAI API client for Python.
+- `react-native`: Core framework for building native apps using React.
+- `expo`: Development platform for making universal native apps for Android, iOS, and the web.
+- `expo-image-picker`: Provides access to the system's UI for selecting images from the device's library or camera.
+- `aws-sdk`: Provides programmatic access to AWS services.
 
 ## Running the Application Locally
 
 ### Local Installation and Setup
 
-1. To set up CareBridge locally, follow these steps:
+1. To set up CareBridge Mobile locally, follow these steps:
 
 ```bash
 # Clone the repository
-git clone https://your-repository-link.git
-cd CareBridge
-
-# Optional: Set up a virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows use 'venv\Scripts\activate'
+git clone https://github.com/andreialbu03/CareBridge-Mobile
+cd CareBridge-Mobile
 
 # Install dependencies
-pip install -r requirements.txt
+npm install
 ```
 
 2. Create a `.env` file in the project root directory.
-
-3. Makes sure the following environment variables are present in the `.env` file:
+3. Make sure the following environment variables are present in the `.env` file:
 
 ```
-AWS_ACCESS_KEY=your_aws_access_key
-AWS_SECRET_KEY=your_aws_secret_key
-AWS_REGION=your_aws_region
-S3_BUCKET=your_s3_bucket_name
-GPT_API_KEY=your_gpt_api_key
+AWS_REGION=aws-region
+AWS_ACCESS_KEY_ID=your-aws-access-key
+AWS_SECRET_ACCESS_KEY=your-aws-secret-key
+S3_BUCKET_NAME=your-aws-s3-bucket-name
+OPENAI_API_KEY=your-openai-api-key
 ```
 
 ### Running the Application
 
-3. Run the application using UVicorn within the `src` directory:
+4. Start the Expo development server:
 
 ```bash
-cd src
-uvicorn main:app --reload
+npm start
 ```
+
+5. To run on iOS Simulator:
+
+   - Press `i` in the terminal to open in iOS Simulator
+   - OR scan the QR code with your iPhone camera and open in Expo Go app
+
+6. To run on Android Emulator:
+   - Press `a` in the terminal to open in Android Emulator
+   - OR scan the QR code with the Expo Go app on your Android device
