@@ -1,7 +1,7 @@
-// components/Button.js
 import React from "react";
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
 
+// A reusable button component
 const Button = ({ title, onPress, style, disabled }) => {
   return (
     <TouchableOpacity
@@ -16,6 +16,7 @@ const Button = ({ title, onPress, style, disabled }) => {
 
 export default Button;
 
+// Styles
 const styles = StyleSheet.create({
   button: {
     backgroundColor: "#4062FF",

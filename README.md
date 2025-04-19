@@ -17,7 +17,7 @@ CareBridge is now redesigned with a mobile-first approach to improve accessibili
 
 ## Features
 
-With CareBridge, you can easily interpret medical jargon and understand your health with a range of features:
+With CareBridge Mobile, you can easily interpret medical jargon and understand your health with a range of features:
 
 - **Mobile Optimization**: Responsive design, touch-friendly navigation, and intuitive interfaces for seamless use on smartphones.
 

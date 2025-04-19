@@ -26,7 +26,7 @@ const ResultScreen = ({ results, handleReset }) => {
       return;
     }
 
-    // Convert markdown to plain text (basic approach)
+    // Convert markdown to plain text
     const plainText =
       typeof textractResults === "string"
         ? textractResults.replace(/\*\*(.*?)\*\*/g, "$1").replace(/\#\s/g, "")
@@ -34,6 +34,7 @@ const ResultScreen = ({ results, handleReset }) => {
 
     setIsSpeaking(true);
 
+    // Use Expo Speech to read the text
     try {
       await Speech.speak(plainText, {
         language: "en-US",
